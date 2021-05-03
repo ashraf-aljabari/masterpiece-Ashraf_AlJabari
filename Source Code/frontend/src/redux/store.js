@@ -20,16 +20,32 @@ import {
   complaintListMyReducer,
   complaintUpdateReducer,
 } from './reducers/complaintsReducers';
+import {
+  playgroundApproveReducer,
+  playgroundCreateReducer,
+  playgroundListMyReducer,
+  playgroundListReducer,
+} from './reducers/playgroundReducers';
+import {
+  bookingApproveReducer,
+  bookingListMyReducer,
+  bookingCreateReducer,
+  bookingPlaygroundListReducer,
+} from './reducers/bookingReducers';
 
 // redux store (where all the state of the application is).
 
 const reducer = combineReducers({
-  complaintList: complaintListReducer,
-  complaintDetails: complaintDetailsReducer,
-  complaintCreate: complaintCreateReducer,
-  complaintUpdate: complaintUpdateReducer,
-  complaintCommentCreate: complaintCommentCreateReducer,
-  complaintListMy: complaintListMyReducer,
+  bookingApprove: bookingApproveReducer,
+  bookingListMy: bookingListMyReducer,
+  bookingCreate: bookingCreateReducer,
+  bookingPlaygroundList: bookingPlaygroundListReducer,
+  playgroundList: playgroundListReducer,
+  // complaintDetails: complaintDetailsReducer,
+  playgroundCreate: playgroundCreateReducer,
+  playgroundApprove: playgroundApproveReducer,
+  // complaintCommentCreate: complaintCommentCreateReducer,
+  playgroundListMy: playgroundListMyReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,

@@ -64,6 +64,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     display: 'flex',
     height: '85vh',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   tabs: {
     borderRight: `1px solid ${theme.palette.divider}`,
@@ -133,8 +135,8 @@ const ProfilePage = ({ history }) => {
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
   const { success } = userUpdateProfile;
 
-  const complaintListMy = useSelector((state) => state.complaintListMy);
-  const { loading: loadingComplaints, complaints } = complaintListMy;
+  // const complaintListMy = useSelector((state) => state.complaintListMy);
+  // const { loading: loadingComplaints, complaints } = complaintListMy;
 
   useEffect(() => {
     if (!userInfo) {
@@ -146,7 +148,8 @@ const ProfilePage = ({ history }) => {
         dispatch(listMyComplaints());
       } else {
         setName(user.name);
-        setEmail(user.email);
+        console.log(user);
+        setEmail(user.phoneNumber);
       }
     }
   }, [dispatch, history, userInfo, user, success]);
@@ -165,199 +168,95 @@ const ProfilePage = ({ history }) => {
   };
   return (
     <div className={classes.root}>
-      <Tabs
-        orientation='vertical'
-        variant='scrollable'
-        value={value}
-        onChange={handleChange}
-        aria-label='Vertical tabs example'
-        className={classes.tabs}
-      >
-        <Tab label='Profile' {...a11yProps(0)} />
-        {/* {userInfo &&
-          (!userInfo.isAdmin ? (
-            <>
-              <Tab label='Complaints' {...a11yProps(1)} />
-              <Tab label='resolved' {...a11yProps(2)} />
-              <Tab label='pending' {...a11yProps(3)} />
-              <Tab label='dismissed' {...a11yProps(4)} />
-            </>
-          ) : (
-            ''
-          ))} */}
-        {userInfo && !userInfo.isAdmin && (
-          <Tab label='Complaints' {...a11yProps(1)} />
-        )}
-        {userInfo && !userInfo.isAdmin && (
-          <Tab label='resolved' {...a11yProps(2)} />
-        )}
-        {userInfo && !userInfo.isAdmin && (
-          <Tab label='pending' {...a11yProps(3)} />
-        )}
-        {userInfo && !userInfo.isAdmin && (
-          <Tab label='dismissed' {...a11yProps(4)} />
-        )}
-      </Tabs>
-      <TabPanel value={value} index={0} className={classes.panel}>
-        <div className={classes.data}>
-          <Avatar className={classes.large}>{name.charAt(0)}</Avatar>
-          <Paper className={classes.formContainer}>
-            <form noValidate onSubmit={submitHandler} className={classes.from}>
+      <div className={classes.data}>
+        <Avatar className={classes.large}>{name.charAt(0)}</Avatar>
+        <Paper className={classes.formContainer}>
+          <form noValidate onSubmit={submitHandler} className={classes.from}>
+            <TextField
+              id='name'
+              name='name'
+              type='name'
+              label='Name'
+              disabled={edit}
+              className={classes.textField}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              fullWidth
+            />
+            <TextField
+              id='email'
+              name='email'
+              type='email'
+              label='Email'
+              disabled={edit}
+              className={classes.textField}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              fullWidth
+            />
+            {!edit && (
               <TextField
-                id='name'
-                name='name'
-                type='name'
-                label='Name'
+                id='password'
+                name='password'
+                type='password'
+                label='Password'
                 disabled={edit}
                 className={classes.textField}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 fullWidth
               />
+            )}
+            {!edit && (
               <TextField
-                id='email'
-                name='email'
-                type='email'
-                label='Email'
+                id='ConfirmPassword'
+                name='ConfirmPassword'
+                type='password'
+                label='Confirm Password'
                 disabled={edit}
                 className={classes.textField}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 fullWidth
               />
+            )}
+            {error && <Alert severity='error'>{error}</Alert>}
+            {message && <Alert severity='error'>{message}</Alert>}
+            <div className={classes.buttonsContainer}>
+              <Button
+                variant='contained'
+                color='primary'
+                className={classes.button}
+                disabled={loading}
+                onClick={() => setEdit(!edit)}
+              >
+                {loading ? (
+                  <CircularProgress size={30} className={classes.progress} />
+                ) : edit ? (
+                  'Edit'
+                ) : (
+                  'cancel'
+                )}
+              </Button>
               {!edit && (
-                <TextField
-                  id='password'
-                  name='password'
-                  type='password'
-                  label='Password'
-                  disabled={edit}
-                  className={classes.textField}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  fullWidth
-                />
-              )}
-              {!edit && (
-                <TextField
-                  id='ConfirmPassword'
-                  name='ConfirmPassword'
-                  type='password'
-                  label='Confirm Password'
-                  disabled={edit}
-                  className={classes.textField}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  fullWidth
-                />
-              )}
-              {error && <Alert severity='error'>{error}</Alert>}
-              {message && <Alert severity='error'>{message}</Alert>}
-              <div className={classes.buttonsContainer}>
                 <Button
+                  type='submit'
                   variant='contained'
                   color='primary'
                   className={classes.button}
                   disabled={loading}
-                  onClick={() => setEdit(!edit)}
                 >
                   {loading ? (
                     <CircularProgress size={30} className={classes.progress} />
                   ) : (
-                    'Edit'
+                    'Save'
                   )}
                 </Button>
-                {!edit && (
-                  <Button
-                    type='submit'
-                    variant='contained'
-                    color='primary'
-                    className={classes.button}
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <CircularProgress
-                        size={30}
-                        className={classes.progress}
-                      />
-                    ) : (
-                      'Save'
-                    )}
-                  </Button>
-                )}
-              </div>
-            </form>
-          </Paper>
-        </div>
-      </TabPanel>
-      <TabPanel value={value} index={1} className={classes.panel}>
-        <div className={classes.data}>
-          {loadingComplaints ? (
-            <CircularProgress size={30} className={classes.progress} />
-          ) : (
-            complaints &&
-            complaints.map((complaint) => (
-              <div style={{ margin: '0 auto 0 auto' }}>
-                <ComplaintCard key={complaint._id} complaint={complaint} />
-              </div>
-            ))
-          )}
-        </div>
-      </TabPanel>
-      <TabPanel value={value} index={2} className={classes.panel}>
-        <div className={classes.data}>
-          {loadingComplaints ? (
-            <CircularProgress size={30} className={classes.progress} />
-          ) : (
-            complaints &&
-            complaints.map((complaint) => {
-              if (complaint.status === 'resolved') {
-                return (
-                  <div style={{ margin: '0 auto 0 auto' }}>
-                    <ComplaintCard key={complaint._id} complaint={complaint} />
-                  </div>
-                );
-              }
-            })
-          )}
-        </div>
-      </TabPanel>
-      <TabPanel value={value} index={3} className={classes.panel}>
-        <div className={classes.data}>
-          {loadingComplaints ? (
-            <CircularProgress size={30} className={classes.progress} />
-          ) : (
-            complaints &&
-            complaints.map((complaint) => {
-              if (complaint.status === 'pending') {
-                return (
-                  <div style={{ margin: '0 auto 0 auto' }}>
-                    <ComplaintCard key={complaint._id} complaint={complaint} />
-                  </div>
-                );
-              }
-            })
-          )}
-        </div>
-      </TabPanel>
-      <TabPanel value={value} index={4} className={classes.panel}>
-        <div className={classes.data}>
-          {loadingComplaints ? (
-            <CircularProgress size={30} className={classes.progress} />
-          ) : (
-            complaints &&
-            complaints.map((complaint) => {
-              if (complaint.status === 'dismissed') {
-                return (
-                  <div style={{ margin: '0 auto 0 auto' }}>
-                    <ComplaintCard key={complaint._id} complaint={complaint} />
-                  </div>
-                );
-              }
-            })
-          )}
-        </div>
-      </TabPanel>
+              )}
+            </div>
+          </form>
+        </Paper>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { COMPLAINT_LIST_MY_RESET } from '../constants/complaintsConstants';
 import {
+  PLAYGROUND_CREATE_RESET,
+  PLAYGROUND_LIST_MY_RESET,
+} from '../constants/playgroundConstants';
+import {
   USER_DELETE_FAIL,
   USER_DELETE_REQUEST,
   USER_DELETE_SUCCESS,
@@ -27,7 +31,7 @@ import {
 // redux user actions
 
 // fetch the email and password from the user and log the user in.
-export const login = (email, password) => async (dispatch) => {
+export const login = (phoneNumber, password) => async (dispatch) => {
   try {
     dispatch({
       type: USER_LOGIN_REQUEST,
@@ -40,7 +44,7 @@ export const login = (email, password) => async (dispatch) => {
     };
     const { data } = await axios.post(
       '/api/users/login',
-      { email, password },
+      { phoneNumber, password },
       config
     );
 
@@ -66,11 +70,14 @@ export const logout = () => (dispatch) => {
   localStorage.removeItem('user');
   dispatch({ type: USER_LOGOUT });
   dispatch({ type: USER_DETAILS_RESET });
-  dispatch({ type: COMPLAINT_LIST_MY_RESET });
+  dispatch({ type: PLAYGROUND_LIST_MY_RESET });
+  dispatch({ type: PLAYGROUND_CREATE_RESET });
 };
 
 // registering new user and storing them in the database.
-export const register = (name, email, password) => async (dispatch) => {
+export const register = (name, phoneNumber, password, isOwner) => async (
+  dispatch
+) => {
   try {
     dispatch({
       type: USER_REGISTER_REQUEST,
@@ -84,7 +91,7 @@ export const register = (name, email, password) => async (dispatch) => {
 
     const { data } = await axios.post(
       '/api/users',
-      { name, email, password },
+      { name, phoneNumber, password, isOwner },
       config
     );
 

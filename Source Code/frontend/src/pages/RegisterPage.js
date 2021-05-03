@@ -10,6 +10,10 @@ import {
   Typography,
   CircularProgress,
   Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
@@ -22,11 +26,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
   },
   image: {
-    margin: '20px auto 20px auto',
+    margin: '0',
     padding: '0',
   },
   pageTitle: {
     margin: '10px auto 10px auto',
+    fontWeight: 'bold',
   },
   textField: {
     margin: '10px auto 10px auto',
@@ -35,16 +40,25 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 20,
     position: 'relative',
   },
+  formControl: {
+    // margin: theme.spacing(1),
+    width: '100%',
+  },
 }));
 
 // customers can sing-up here to post there complaints
 const SignupPage = ({ location, history }) => {
   const classes = useStyles();
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [userType, setUserType] = useState(false);
   const [message, setMessage] = useState('');
+  const [phoneError, setPhoneError] = useState(false);
+
+  var phoneNumberRegEx = new RegExp(
+    /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
+  );
 
   const dispatch = useDispatch();
 
@@ -61,13 +75,10 @@ const SignupPage = ({ location, history }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setMessage('Password do not match');
-    } else {
-      setMessage('');
-      dispatch(register(name, email, password));
-    }
+    setMessage('');
+    dispatch(register(name, phoneNumber, password, userType));
   };
+  console.log(userType);
 
   return (
     <Grid container className={classes.form}>
@@ -76,10 +87,10 @@ const SignupPage = ({ location, history }) => {
         <img
           src={AppLogo}
           alt='app logo'
-          width='150'
+          width='100'
           className={classes.image}
         />
-        <Typography variant='h2' className={classes.pageTitle}>
+        <Typography variant='h4' className={classes.pageTitle}>
           Sign up
         </Typography>
         <form noValidate onSubmit={submitHandler}>
@@ -94,13 +105,21 @@ const SignupPage = ({ location, history }) => {
             fullWidth
           />
           <TextField
-            id='email'
-            name='email'
-            type='email'
-            label='Email'
+            id='phonenumber'
+            name='phoneNumber'
+            type='tel'
+            label='Phone Number'
             className={classes.textField}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={phoneNumber}
+            onChange={(e) => {
+              setPhoneNumber(e.target.value);
+              if (phoneNumberRegEx.test(e.target.value)) {
+                setPhoneError(false);
+              } else {
+                setPhoneError(true);
+              }
+            }}
+            error={phoneError}
             fullWidth
           />
           <TextField
@@ -113,16 +132,18 @@ const SignupPage = ({ location, history }) => {
             onChange={(e) => setPassword(e.target.value)}
             fullWidth
           />
-          <TextField
-            id='ConfirmPassword'
-            name='ConfirmPassword'
-            type='password'
-            label='Confirm Password'
-            className={classes.textField}
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            fullWidth
-          />
+          <FormControl className={classes.formControl}>
+            <InputLabel id='demo-simple-select-label'>Status</InputLabel>
+            <Select
+              labelId='demo-simple-select-label'
+              id='demo-simple-select'
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
+            >
+              <MenuItem value={false}>Player</MenuItem>
+              <MenuItem value={true}>Owner</MenuItem>
+            </Select>
+          </FormControl>
           {error && <Alert severity='error'>{error}</Alert>}
           {message && <Alert severity='error'>{message}</Alert>}
           <Button

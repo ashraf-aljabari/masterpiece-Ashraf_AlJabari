@@ -24,11 +24,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
   },
   image: {
-    margin: '20px auto 20px auto',
+    margin: '0',
     padding: '0',
   },
   pageTitle: {
     margin: '10px auto 10px auto',
+    fontWeight: 'bold',
   },
   textField: {
     margin: '10px auto 10px auto',
@@ -43,8 +44,13 @@ const useStyles = makeStyles((theme) => ({
 
 const LoginPage = ({ location, history }) => {
   const classes = useStyles();
-  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [phoneError, setPhoneError] = useState(false);
+
+  var phoneNumberRegEx = new RegExp(
+    /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
+  );
 
   const dispatch = useDispatch();
 
@@ -61,7 +67,7 @@ const LoginPage = ({ location, history }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(login(email, password));
+    dispatch(login(phoneNumber, password));
   };
 
   return (
@@ -71,21 +77,29 @@ const LoginPage = ({ location, history }) => {
         <img
           src={AppLogo}
           alt='app logo'
-          width='150'
+          width='100'
           className={classes.image}
         />
-        <Typography variant='h2' className={classes.pageTitle}>
+        <Typography variant='h4' className={classes.pageTitle}>
           Login
         </Typography>
         <form noValidate onSubmit={submitHandler}>
           <TextField
-            id='email'
-            name='email'
-            type='email'
-            label='Email'
+            id='phonenumber'
+            name='phoneNumber'
+            type='tel'
+            label='Phone Number'
             className={classes.textField}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={phoneNumber}
+            onChange={(e) => {
+              setPhoneNumber(e.target.value);
+              if (phoneNumberRegEx.test(e.target.value)) {
+                setPhoneError(false);
+              } else {
+                setPhoneError(true);
+              }
+            }}
+            error={phoneError}
             fullWidth
           />
           <TextField

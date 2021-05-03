@@ -18,9 +18,11 @@ import ComplaintAdminPage from './pages/ComplaintAdminPage';
 import UserAdminPage from './pages/UsersAdminPage';
 import UserEditPage from './pages/UserEditPage';
 import ComplaintPage from './pages/ComplaintPage';
-
+import AllPlaygrounds from './pages/AllPlaygroundsPage';
+import BookingsPage from './pages/BookingsPage';
 // Components imports
 import Navbar from './components/Navbar';
+import Header from './components/Header';
 
 const theme = createMuiTheme(MuiTheme);
 
@@ -30,13 +32,16 @@ function App() {
       <Provider store={store}>
         <main className='App'>
           <Router>
-            <Navbar />
+            {/* <Navbar /> */}
+            <Header />
             <div className='container'>
               <Switch>
                 <Route path='/' component={HomePage} exact />
                 <Route path='/login' component={LoginPage} />
                 <Route path='/signup' component={SignupPage} />
                 <Route path='/profile' component={ProfilePage} />
+                <Route path='/allplaygrounds' component={AllPlaygrounds} />
+                <Route path='/bookings/:id?' component={BookingsPage} />
                 <Route
                   path='/admin/complaints'
                   component={ComplaintAdminPage}

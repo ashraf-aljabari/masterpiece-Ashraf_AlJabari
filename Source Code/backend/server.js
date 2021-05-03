@@ -4,12 +4,16 @@ import colors from 'colors';
 import connectDB from './config/db.js';
 import cors from 'cors';
 import http from 'http';
+import bodyParser from 'body-parser';
+import methodOverride from 'method-override';
 // middleware imports
-
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 
 // routes imports
 import userRoutes from './routes/userRoutes.js';
+import imageRoutes from './routes/imageRoutes.js';
+import playgroundRoutes from './routes/playgroundRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
 import complaintRoutes from './routes/complaintRoutes.js';
 
 // env files configuration
@@ -21,6 +25,10 @@ connectDB();
 // Initializing express
 const app = express();
 
+//Middleware
+app.use(bodyParser.json());
+app.use(methodOverride('_method'));
+
 // To deal with json objects between frontend and back end
 app.use(express.json());
 
@@ -29,6 +37,15 @@ app.use(cors());
 
 // Users routes
 app.use('/api/users', userRoutes);
+
+// Users routes
+app.use('/api/playgrounds', playgroundRoutes);
+
+// Users routes
+app.use('/api/bookings', bookingRoutes);
+
+// Images routes
+app.use('/api/images', imageRoutes);
 
 // Complains routes
 // app.use('/api/complaints', complaintRoutes);

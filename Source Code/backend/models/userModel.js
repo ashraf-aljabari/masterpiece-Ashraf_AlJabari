@@ -19,9 +19,11 @@ const userSchema = mongoose.Schema(
     },
     profileImage: {
       type: String,
+      default: 'noImage.png',
     },
     numberOfReports: {
       type: Number,
+      default: 0,
     },
     isOwner: {
       type: Boolean,
